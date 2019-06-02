@@ -1,0 +1,47 @@
+function DataMinerSS() {
+  var dokuments =  SpreadsheetApp.openById("1R-8eisBB5xHI_TijfQBVFSrbceScLpBH7y5LOb3Tvx4");
+  var pirmaLapa =  dokuments.getSheetByName("Sheet1");
+  var salkop = {};
+ 
+  var ct = 3;
+  
+  for(var k = 3;k<7;k++){
+  var carName = 'a'+k
+  var destinationSheet =  dokuments.getSheetByName(carName);
+  var maxLapas = 15;
+  var cell = pirmaLapa.getRange('D3');
+  pirmaLapa.getRange(1,2).setValue(1);
+  var lapas = '="https://www.ss.com/lv/transport/cars/audi/'+carName+ '/sell/page"&B1&".html"';
+  pirmaLapa.getRange(1,1).setValue(lapas);
+    Logger.log("mashina: "+carName+ "  No lapas: "+lapas+"  Sheta:  "+destinationSheet);
+                                       // sheet1, range 1,2 ir lapas adreses veidotajs, j ir lapas, ct ir ridas lapa
+   for(var j = 1; j < maxLapas;j++){
+    pirmaLapa.getRange(1,2).setValue(j);
+    Utilities.sleep(3000);
+    ct = 3;
+    while ( cell.offset(ct, 0).getValue() != "" ) {
+      ct++;
+    } 
+    if(j ==1){
+        var visskopa1 = pirmaLapa.getRange(3,3);
+        var sal1 = visskopa1.getValue();
+    }  
+    if(j !=1){
+        var visskopaTagad = pirmaLapa.getRange(3,3);
+        salkop = visskopaTagad.getValue();
+    }
+    if(sal1 == salkop){
+      maxLapas = 1;
+    }else{
+      for(var i = 3; i < ct+2; i++){
+        destinationSheet.getRange(destinationSheet.getLastRow()+1,1).setValue(Utilities.formatDate(new Date(), "GMT+2", "dd/MM/yyyy"));
+        destinationSheet.getRange(destinationSheet.getLastRow(),2,1, 1).setValue(pirmaLapa.getRange(i,3).getValue().replace(/\*/g,""));
+        destinationSheet.getRange(destinationSheet.getLastRow(),3,1, 1).setValue(pirmaLapa.getRange(i,4).getValue().toString().replace(/\*/g,""));
+        destinationSheet.getRange(destinationSheet.getLastRow(),4,1, 1).setValue(pirmaLapa.getRange(i,5).getValue().toString().replace(/\*/g,""));  
+        destinationSheet.getRange(destinationSheet.getLastRow(),5,1, 1).setValue(pirmaLapa.getRange(i,6).getValue().toString().replace(/\*/g,""));
+        destinationSheet.getRange(destinationSheet.getLastRow(),6,1, 1).setValue(pirmaLapa.getRange(i,7).getValue().toString().replace(/\*/g,"").replace(/\s*/g,""));
+      }
+   }
+ }
+  }
+}
